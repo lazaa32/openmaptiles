@@ -336,15 +336,10 @@ FROM (
          WHERE zoom_level = 11
          UNION ALL
 
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z12
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z13
-         -- etldoc: osm_highway_linestring  ->  layer_transportation:z14_
-         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z12
-         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z13
-         -- etldoc: osm_transportation_name_network  ->  layer_transportation:z14_
-         SELECT hl.osm_id,
-                hl.geometry,
-                hl.highway,
+         -- etldoc: osm_highway_linestring_with_route_rank  ->  layer_transportation:z12
+         SELECT osm_id,
+                geometry,
+                highway,
                 construction,
                 network,
                 NULL AS railway,
@@ -361,37 +356,117 @@ FROM (
                 is_ramp,
                 is_oneway,
                 man_made,
-                hl.layer,
-                CASE WHEN hl.highway IN ('footway', 'steps') THEN hl.level END AS level,
-                CASE WHEN hl.highway IN ('footway', 'steps') THEN hl.indoor END AS indoor,
+                layer,
+                CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+                CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
                 bicycle,
                 foot,
                 horse,
                 mtb_scale,
                 surface_value(surface) AS "surface",
-                hl.z_order
-         FROM osm_highway_linestring hl
-         LEFT OUTER JOIN osm_transportation_name_network n ON hl.osm_id = n.osm_id
-         WHERE NOT is_area
-           AND
-               CASE WHEN zoom_level = 12 THEN
-                         CASE WHEN transportation_filter_z12(hl.highway, hl.construction) THEN TRUE
-                              WHEN n.route_rank = 1 THEN TRUE
-                         END
-                    WHEN zoom_level = 13 THEN
-                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(hl.geometry)
-                              WHEN hl.highway = 'path' THEN (
-                                                        hl.name <> ''
-                                                     OR n.route_rank BETWEEN 1 AND 2
-                                                     OR hl.sac_scale <> ''
-                                                   )
-                              ELSE transportation_filter_z13(hl.highway, public_transport, hl.construction, service)
-                         END
-                    WHEN zoom_level >= 14 THEN
-                         CASE WHEN man_made='pier' THEN NOT ST_IsClosed(hl.geometry)
-                              ELSE TRUE
-                         END
-               END
+                z_order
+         FROM osm_highway_linestring_with_route_rank
+         WHERE zoom_level = 12
+         AND NOT is_area
+         AND (
+             highway IN ('unclassified', 'residential')
+             OR
+             highway_class(highway, '', construction) IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary',
+                                                          'raceway', 'motorway_construction', 'trunk_construction',
+                                                          'primary_construction', 'secondary_construction',
+                                                          'tertiary_construction', 'raceway_construction', 'busway')
+             OR
+             route_rank = 1
+             )
+         UNION ALL
+
+         -- etldoc: osm_highway_linestring_with_route_rank  ->  layer_transportation:z13
+         SELECT osm_id,
+                geometry,
+                highway,
+                construction,
+                network,
+                NULL AS railway,
+                NULL AS aerialway,
+                NULL AS shipway,
+                public_transport,
+                service_value(service) AS service,
+                CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
+                toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                expressway,
+                is_ramp,
+                is_oneway,
+                man_made,
+                layer,
+                CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+                CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+                bicycle,
+                foot,
+                horse,
+                mtb_scale,
+                surface_value(surface) AS "surface",
+                z_order
+         FROM osm_highway_linestring_with_route_rank
+         WHERE zoom_level = 13
+         AND NOT is_area
+         AND (
+             man_made = 'pier' AND NOT ST_IsClosed(geometry)
+             OR
+             highway = 'path' AND (name <> '' OR route_rank BETWEEN 1 AND 2 OR sac_scale <> '')
+             OR
+             highway IN ('unclassified', 'residential')
+             OR
+             highway_class(highway, '', construction) IN ('motorway', 'trunk', 'primary', 'secondary', 'tertiary',
+                                                          'raceway', 'motorway_construction', 'trunk_construction',
+                                                          'primary_construction', 'secondary_construction',
+                                                          'tertiary_construction', 'raceway_construction', 'busway')
+             OR
+             (highway = 'service' OR construction = 'service') AND service NOT IN ('driveway', 'parking_aisle')
+             OR
+             highway_class(highway, public_transport, construction) IN ('minor', 'minor_construction')
+            )
+         UNION ALL
+
+         -- etldoc: osm_highway_linestring_with_route_rank  ->  layer_transportation:z14_
+         SELECT osm_id,
+                geometry,
+                highway,
+                construction,
+                network,
+                NULL AS railway,
+                NULL AS aerialway,
+                NULL AS shipway,
+                public_transport,
+                service_value(service) AS service,
+                CASE WHEN access IN ('private', 'no') THEN 'no' END AS access,
+                toll,
+                is_bridge,
+                is_tunnel,
+                is_ford,
+                expressway,
+                is_ramp,
+                is_oneway,
+                man_made,
+                layer,
+                CASE WHEN highway IN ('footway', 'steps') THEN level END AS level,
+                CASE WHEN highway IN ('footway', 'steps') THEN indoor END AS indoor,
+                bicycle,
+                foot,
+                horse,
+                mtb_scale,
+                surface_value(surface) AS "surface",
+                z_order
+         FROM osm_highway_linestring_with_route_rank
+         WHERE zoom_level >= 14
+         AND NOT is_area
+         AND (
+             man_made <> 'pier'
+             OR
+             NOT ST_IsClosed(geometry)
+             )
          UNION ALL
 
          -- etldoc: osm_railway_linestring_gen_z8  ->  layer_transportation:z8

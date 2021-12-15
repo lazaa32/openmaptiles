@@ -256,6 +256,62 @@ WHERE (highway = 'motorway' OR construction = 'motorway')
 CREATE INDEX IF NOT EXISTS osm_transportation_merge_linestring_gen_z4_geometry_idx
     ON osm_transportation_merge_linestring_gen_z4 USING gist (geometry);
 
+-- etldoc: osm_highway_linestring  ->  osm_highway_linestring_with_route_rank
+-- etldoc: osm_transportation_name_network  ->  osm_highway_linestring_with_route_rank
+DROP MATERIALIZED VIEW IF EXISTS osm_highway_linestring_with_route_rank CASCADE;
+CREATE MATERIALIZED VIEW osm_highway_linestring_with_route_rank AS
+(
+SELECT
+    hl.id AS id,
+    hl.osm_id AS osm_id,
+    hl.highway AS highway,
+    hl.construction AS construction,
+    hl.ref AS ref,
+    hl.network AS network,
+    hl.z_order AS z_order,
+    hl.layer AS layer,
+    hl.level AS level,
+    hl.indoor AS indoor,
+    hl.name AS name,
+    hl.name_en AS name_en,
+    hl.name_de AS name_de,
+    hl.tags AS tags,
+    hl.short_name AS short_name,
+    hl.is_tunnel AS is_tunnel,
+    hl.is_bridge AS is_bridge,
+    hl.is_ramp AS is_ramp,
+    hl.is_ford AS is_ford,
+    hl.is_oneway AS is_oneway,
+    hl.is_area AS is_area,
+    hl.service AS service,
+    hl.access AS access,
+    hl.toll AS toll,
+    hl.usage AS usage,
+    hl.public_transport AS public_transport,
+    hl.man_made AS man_made,
+    hl.bicycle AS bicycle,
+    hl.foot AS foot,
+    hl.horse AS horse,
+    hl.mtb_scale AS mtb_scale,
+    hl.sac_scale AS sac_scale,
+    hl.surface AS surface,
+    hl.expressway AS expressway,
+    hl.geometry AS geometry,
+    n.route_rank AS route_rank
+FROM osm_highway_linestring hl
+LEFT OUTER JOIN osm_transportation_name_network n
+ON hl.osm_id = n.osm_id
+);
+
+CREATE INDEX osm_highway_linestring_with_route_rank_geom
+ON osm_highway_linestring_with_route_rank USING gist(geometry);
+
+CREATE INDEX osm_highway_linestring_with_route_rank_highway_partial_idx
+ON osm_highway_linestring_with_route_rank (highway)
+WHERE highway IN ('motorway', 'trunk');
+
+CREATE INDEX osm_highway_linestring_with_route_rank_pkey
+ON osm_highway_linestring_with_route_rank (osm_id, id);
 
 -- Handle updates
 
@@ -289,6 +345,7 @@ BEGIN
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z6;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z5;
     REFRESH MATERIALIZED VIEW osm_transportation_merge_linestring_gen_z4;
+    REFRESH MATERIALIZED VIEW osm_highway_linestring_with_route_rank;
     -- noinspection SqlWithoutWhere
     DELETE FROM transportation.updates;
 
