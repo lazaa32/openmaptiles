@@ -423,7 +423,7 @@ FROM (
                 NULL AS surface,
                 z_order
          FROM osm_railway_linestring_gen_z8
-         WHERE zoom_level = 8
+         WHERE zoom_level BETWEEN 3 AND 8
            AND railway = 'rail'
            AND service = ''
            AND usage = 'main'
