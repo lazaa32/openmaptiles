@@ -102,7 +102,7 @@ FROM (
                 NULL AS surface,
                 z_order
          FROM osm_transportation_merge_linestring_gen_z4
-         WHERE zoom_level = 4
+         WHERE zoom_level = 4 OR zoom_level = 3
          UNION ALL
 
          -- etldoc: osm_transportation_merge_linestring_gen_z5 -> layer_transportation:z5
