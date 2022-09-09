@@ -8,6 +8,7 @@ SHELL         = /bin/bash
 
 # Layers definition and meta data
 TILESET_FILE := $(or $(TILESET_FILE),$(shell (. .env; echo $${TILESET_FILE})),openmaptiles.yaml)
+STYLE_FILE := $(or $(STYLE_FILE),$(shell (. .env; echo $${STYLE_FILE})),tileserver/styles/OpenMapTiles/style.json)
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
@@ -231,7 +232,7 @@ export HELP_MESSAGE
 #
 
 .PHONY: all
-all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql
+all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql recompose-style
 
 .PHONY: help
 help:
@@ -279,6 +280,21 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 							 --key --gzip --postgis-ver 3.0.1 \
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
+
+.PHONY: split-style
+split-style:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'recompose-style split $(TILESET_FILE) $(STYLE_FILE)'
+
+.PHONY: merge-style
+merge-style:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
+		'recompose-style merge $(TILESET_FILE) $(STYLE_FILE)'
+
+.PHONY: recompose-style
+recompose-style:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'recompose-style merge $(TILESET_FILE) $(STYLE_FILE) \
+		&& recompose-style split $(TILESET_FILE) $(STYLE_FILE)'
 
 .PHONY: clean
 clean: clean-test-data

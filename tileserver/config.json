@@ -1,0 +1,24 @@
+{
+  "options": {
+    "paths": {
+      "root": "/tileserver",
+      "fonts": "fonts",
+      "sprites": "sprites",
+      "styles": "styles",
+      "mbtiles": "/data"
+    }
+  },
+  "styles": {
+    "OpenMapTiles": {
+      "style": "OpenMapTiles/style.json",
+      "tilejson": {
+        "type": "overlay"
+      }
+    }
+  },
+  "data": {
+    "openmaptiles": {
+      "mbtiles": "tiles.mbtiles"
+    }
+  }
+}
