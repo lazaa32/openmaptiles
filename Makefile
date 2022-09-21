@@ -282,15 +282,10 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 							 --function --fname=getmvt >> ./build/sql/run_last.sql'
 endif
 
-.PHONY: split-style
-split-style:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'style-tools split $(TILESET_FILE) $(STYLE_FILE)'
-
-.PHONY: merge-style
-merge-style:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'style-tools merge $(TILESET_FILE) $(STYLE_FILE) $(STYLE_HEADER_FILE)'
+.PHONY: build-sprite
+build-sprite:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spritezero build/style/sprite /style/icons && \
+		spritezero --retina build/style/sprite@2x /style/icons'
 
 .PHONY: build-style
 build-style:
