@@ -1,0 +1,23 @@
+{
+  "options": {
+    "paths": {
+      "fonts": "/data/fonts",
+      "sprites": "/build/style",
+      "styles": "/build/style",
+      "mbtiles": "/data"
+    }
+  },
+  "styles": {
+    "OpenMapTiles": {
+      "style": "style.json",
+      "tilejson": {
+        "type": "overlay"
+      }
+    }
+  },
+  "data": {
+    "openmaptiles": {
+      "mbtiles": "tiles.mbtiles"
+    }
+  }
+}
