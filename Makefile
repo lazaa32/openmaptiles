@@ -255,6 +255,7 @@ endef
 init-dirs:
 	@mkdir -p build/sql/parallel
 	@mkdir -p build/openmaptiles.tm2source
+	@mkdir -p build/style
 	@mkdir -p data
 	@mkdir -p cache
 	@ ! ($(DOCKER_COMPOSE) 2>/dev/null run $(DC_OPTS) openmaptiles-tools df --output=fstype /tileset| grep -q 9p) < /dev/null || ($(win_fs_error))
@@ -283,12 +284,12 @@ ifeq (,$(wildcard build/sql/run_last.sql))
 endif
 
 .PHONY: build-sprite
-build-sprite:
+build-sprite: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'spritezero build/style/sprite /style/icons && \
 		spritezero --retina build/style/sprite@2x /style/icons'
 
 .PHONY: build-style
-build-style:
+build-style: init-dirs
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools merge $(TILESET_FILE) $(STYLE_FILE) \
 		$(STYLE_HEADER_FILE) && style-tools split $(TILESET_FILE) $(STYLE_FILE) && \
 		spritezero build/style/sprite /style/icons && spritezero --retina build/style/sprite@2x /style/icons'
