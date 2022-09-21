@@ -233,7 +233,7 @@ export HELP_MESSAGE
 #
 
 .PHONY: all
-all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql recompose-style
+all: init-dirs build/openmaptiles.tm2source/data.yml build/mapping.yaml build-sql build-style
 
 .PHONY: help
 help:
@@ -290,8 +290,8 @@ build-sprite: init-dirs
 
 .PHONY: build-style
 build-style: init-dirs
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools merge $(TILESET_FILE) $(STYLE_FILE) \
-		$(STYLE_HEADER_FILE) && style-tools split $(TILESET_FILE) $(STYLE_FILE) && \
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools recompose $(TILESET_FILE) $(STYLE_FILE) \
+		$(STYLE_HEADER_FILE) && \
 		spritezero build/style/sprite /style/icons && spritezero --retina build/style/sprite@2x /style/icons'
 
 .PHONY: download-fonts
@@ -300,7 +300,7 @@ download-fonts:
 		echo "Downloading fonts..." && wget -qO /export/noto-sans.zip --show-progress \
 		https://github.com/openmaptiles/fonts/releases/download/v2.0/noto-sans.zip && \
 		echo "Unzipping fonts..." && unzip -q /export/noto-sans.zip -d /export/fonts && rm /export/noto-sans.zip || \
-		echo "Fonts exist."'
+		echo "Fonts already exist."'
 
 .PHONY: clean
 clean: clean-test-data

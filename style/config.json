@@ -3,8 +3,7 @@
     "paths": {
       "fonts": "/data/fonts",
       "sprites": "/build/style",
-      "styles": "/build/style",
-      "mbtiles": "/data"
+      "styles": "/build/style"
     }
   },
   "styles": {
@@ -16,8 +15,8 @@
     }
   },
   "data": {
-    "openmaptiles": {
-      "mbtiles": "tiles.mbtiles"
+    "MBTiles": {
+      "mbtiles": "/data/tiles.mbtiles"
     }
   }
 }
