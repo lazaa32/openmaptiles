@@ -8,7 +8,6 @@ SHELL         = /bin/bash
 
 # Layers definition and meta data
 TILESET_FILE := $(or $(TILESET_FILE),$(shell (. .env; echo $${TILESET_FILE})),openmaptiles.yaml)
-STYLE_FILE := $(or $(STYLE_FILE),$(shell (. .env; echo $${STYLE_FILE})),tileserver/styles/OpenMapTiles/style.json)
 
 # Options to run with docker and docker-compose - ensure the container is destroyed on exit
 # Containers run as the current user rather than root (so that created files are not root-owned)
@@ -23,6 +22,8 @@ export PPORT
 # Local port to use with tileserver
 TPORT ?= 8080
 export TPORT
+STYLE_FILE := build/style/style.json
+STYLE_HEADER_FILE := style/style-header.json
 
 # Allow a custom docker-compose project name
 DC_PROJECT := $(or $(DC_PROJECT),$(shell (. .env; echo $${DC_PROJECT})))
@@ -284,17 +285,26 @@ endif
 .PHONY: split-style
 split-style:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'recompose-style split $(TILESET_FILE) $(STYLE_FILE)'
+		'style-tools split $(TILESET_FILE) $(STYLE_FILE)'
 
 .PHONY: merge-style
 merge-style:
 	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c \
-		'recompose-style merge $(TILESET_FILE) $(STYLE_FILE)'
+		'style-tools merge $(TILESET_FILE) $(STYLE_FILE) $(STYLE_HEADER_FILE)'
 
-.PHONY: recompose-style
-recompose-style:
-	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'recompose-style merge $(TILESET_FILE) $(STYLE_FILE) \
-		&& recompose-style split $(TILESET_FILE) $(STYLE_FILE)'
+.PHONY: build-style
+build-style:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c 'style-tools merge $(TILESET_FILE) $(STYLE_FILE) \
+		$(STYLE_HEADER_FILE) && style-tools split $(TILESET_FILE) $(STYLE_FILE) && \
+		spritezero build/style/sprite /style/icons && spritezero --retina build/style/sprite@2x /style/icons'
+
+.PHONY: download-fonts
+download-fonts:
+	$(DOCKER_COMPOSE) run $(DC_OPTS) openmaptiles-tools bash -c '[ ! -d "/export/fonts" ] && mkdir /export/fonts && \
+		echo "Downloading fonts..." && wget -qO /export/noto-sans.zip --show-progress \
+		https://github.com/openmaptiles/fonts/releases/download/v2.0/noto-sans.zip && \
+		echo "Unzipping fonts..." && unzip -q /export/noto-sans.zip -d /export/fonts && rm /export/noto-sans.zip || \
+		echo "Fonts exist."'
 
 .PHONY: clean
 clean: clean-test-data

@@ -332,8 +332,8 @@
       "minzoom": 0,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Bold"
+          "Noto Sans Regular",
+          "Noto Sans Bold"
         ],
         "text-size": {
           "stops": [

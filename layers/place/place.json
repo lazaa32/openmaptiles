@@ -8,8 +8,7 @@
       "minzoom": 8,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1.2,
@@ -96,8 +95,7 @@
       "minzoom": 8,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1.2,
@@ -140,8 +138,7 @@
       "minzoom": 6,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1.2,
@@ -190,8 +187,8 @@
       "maxzoom": 12,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Bold"
+          "Noto Sans Regular",
+          "Noto Sans Bold"
         ],
         "text-size": {
           "stops": [
@@ -241,8 +238,7 @@
       "maxzoom": 14,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1.2,
@@ -326,8 +322,7 @@
       "layout": {
         "icon-size": 1,
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1.2,
@@ -411,8 +406,7 @@
       "maxzoom": 15,
       "layout": {
         "text-font": [
-          "Noto Sans Regular",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "stops": [
@@ -465,8 +459,7 @@
       "maxzoom": 12,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Bold"
+          "Noto Sans Bold"
         ],
         "text-size": {
           "stops": [
@@ -535,8 +528,7 @@
       "maxzoom": 12,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Bold"
+          "Noto Sans Bold"
         ],
         "text-size": {
           "stops": [
@@ -605,8 +597,7 @@
       "maxzoom": 12,
       "layout": {
         "text-font": [
-          "Open Sans Semibold",
-          "Open Sans Bold"
+          "Noto Sans Bold"
         ],
         "text-size": {
           "stops": [

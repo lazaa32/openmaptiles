@@ -8,8 +8,8 @@
       "minzoom": 0,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Bold"
+          "Noto Sans Regular",
+          "Noto Sans Bold"
         ],
         "text-size": 12,
         "text-field": "{name:latin}\n{name:nonlatin}",
@@ -42,8 +42,7 @@
       "maxzoom": 24,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Light"
+          "Noto Sans Regular"
         ],
         "text-size": 11,
         "text-field": "{name:latin}\n{name:nonlatin}",

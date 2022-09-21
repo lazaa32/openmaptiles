@@ -29,8 +29,8 @@
         "text-max-width": 6,
         "text-line-height": 1.1,
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Italic"
+          "Noto Sans Regular",
+          "Noto Sans Italic"
         ]
       },
       "paint": {

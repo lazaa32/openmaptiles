@@ -8,8 +8,7 @@
       "minzoom": 14,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": 10,
         "text-field": "{name}",
@@ -45,8 +44,7 @@
       "minzoom": 14,
       "layout": {
         "text-font": [
-          "Open Sans Regular",
-          "Open Sans Regular"
+          "Noto Sans Regular"
         ],
         "text-size": {
           "base": 1,

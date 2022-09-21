@@ -61,8 +61,7 @@
       "maxzoom": 12,
       "layout": {
         "text-font": [
-          "Open Sans Semibold Italic",
-          "Open Sans Italic"
+          "Noto Sans Italic"
         ],
         "text-size": 12,
         "text-field": "{name:latin}{name:nonlatin}",
